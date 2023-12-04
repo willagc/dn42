@@ -1,0 +1,21 @@
+---
+- hosts: k3s-node-01
+  become: yes
+  tasks:
+    - name: Install FRRouting
+      apt:
+        name: frr
+        state: present
+
+    - name: Configure FRRouting on NODE01
+      template:
+        src: /home/williamgonzalez/Desktop/digitalocean-k3s/dn42/templates/frr_config_node01.j2
+        dest: /etc/frr/frr.conf
+      notify: Reload FRRouting
+
+  handlers:
+    - name: Reload FRRouting
+      service:
+        name: frr
+        state: reloaded
+

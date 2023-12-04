@@ -1,0 +1,37 @@
+frr version: 8.1
+frr defaults: traditional
+hostname: k3s-node-01
+log: syslog informational
+service: integrated-vtysh-config
+
+router bgp 4242420513
+ no bgp ebgp-requires-policy
+
+ neighbor 10.108.0.3 remote-as 4242420513
+ neighbor 10.108.0.4 remote-as 4242420513
+ neighbor 172.20.53.103 remote-as 4242423914
+
+ neighbor 172.20.53.103 description kioubit
+ neighbor 172.20.53.103 interface wg1
+
+ address-family ipv4 unicast
+  network 172.20.0.0/14
+  network 172.22.147.160/27
+
+ neighbor 10.108.0.3 route-map internal out
+ neighbor 10.108.0.4 route-map internal out
+ neighbor 172.20.53.103 route-map dn42 out
+ exit-address-family
+exit
+
+access-list internal seq 5 permit 172.20.0.0/14
+access-list dn42 seq 5 permit 172.22.147.160/27
+
+route-map internal permit 10
+ match ip address internal
+exit
+
+route-map dn42 permit 10
+ match ip address dn42
+exit
+
