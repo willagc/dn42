@@ -1,0 +1,5 @@
+- name: Deploy FRR configurations to routers
+  hosts: routers
+  become: yes
+  roles:
+    - frr

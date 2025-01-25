@@ -1,0 +1,29 @@
+routers:
+  edge-rtr-01:
+    hostname: edge-rtr-01
+    home_neighbor:
+      ip: 192.168.255.1
+      asn: 65001
+    edge_neighbor:
+      ip: 169.254.1.2
+      asn: 4242420513
+      description: EDGE-02
+    dn42_neighbor:
+      ip: 172.20.53.103
+      asn: 4242423914
+      description: DN42
+
+  edge-rtr-02:
+    hostname: edge-rtr-02
+    home_neighbor:
+      ip: 192.168.254.1
+      asn: 65001
+    edge_neighbor:
+      ip: 169.254.1.1
+      asn: 4242420513
+      description: EDGE-01
+    dn42_neighbor:
+      ip: 172.20.53.98
+      asn: 4242423914
+      description: DN42_KIOUBIT
+

@@ -1,0 +1,4 @@
+[routers]
+edge-rtr-01 ansible_host=<IP_ADDRESS_OF_EDGE_RTR_01> ansible_user=root
+edge-rtr-02 ansible_host=<IP_ADDRESS_OF_EDGE_RTR_02> ansible_user=root
+
