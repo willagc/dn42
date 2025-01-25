@@ -3,7 +3,7 @@
 ```bash
 # Step 1: Clone the repository to your local machine
 git clone <repository_url>
-cd ansible
+cd dn42
 
 # Step 2: Edit the inventory file to define the target routers
 # The inventory file contains the list of routers Ansible will manage.
