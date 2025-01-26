@@ -12,7 +12,7 @@ routers:
       ip: 172.20.53.103
       asn: 4242423914
       description: DN42
-
+    local_preference: 200  # Only defined for edge-rtr-01
   edge-rtr-02:
     hostname: edge-rtr-02
     home_neighbor:

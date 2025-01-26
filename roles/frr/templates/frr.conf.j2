@@ -1,6 +1,6 @@
 frr version 10.0
 frr defaults traditional
-hostname {{ hostname }}
+hostname {{ routers[inventory_hostname].hostname }}
 log syslog informational
 service integrated-vtysh-config
 !
@@ -13,28 +13,32 @@ debug bgp updates out
 debug bgp zebra
 !
 router bgp 4242420513
- 
+
  # HOMELAB EASIERNETWORKS
  no bgp ebgp-requires-policy
- neighbor {{ home_neighbor.ip }} remote-as {{ home_neighbor.asn }}
- neighbor {{ home_neighbor.ip }} description HOME
- neighbor {{ home_neighbor.ip }} ebgp-multihop
- neighbor {{ home_neighbor.ip }} disable-connected-check
- neighbor {{ home_neighbor.ip }} soft-reconfiguration inbound
+ neighbor {{ routers[inventory_hostname].home_neighbor.ip }} remote-as {{ routers[inventory_hostname].home_neighbor.asn }}
+ neighbor {{ routers[inventory_hostname].home_neighbor.ip }} description HOME
+ neighbor {{ routers[inventory_hostname].home_neighbor.ip }} ebgp-multihop
+ neighbor {{ routers[inventory_hostname].home_neighbor.ip }} disable-connected-check
+ neighbor {{ routers[inventory_hostname].home_neighbor.ip }} soft-reconfiguration inbound
 
  # EDGE-RTR-PEER
- neighbor {{ edge_neighbor.ip }} remote-as {{ edge_neighbor.asn }}
- neighbor {{ edge_neighbor.ip }} description {{ edge_neighbor.description }}
- neighbor {{ edge_neighbor.ip }} update-source wg2
- neighbor {{ edge_neighbor.ip }} soft-reconfiguration inbound
- 
- # DN42 
- neighbor {{ dn42_neighbor.ip }} remote-as {{ dn42_neighbor.asn }}
- neighbor {{ dn42_neighbor.ip }} description {{ dn42_neighbor.description }}
- neighbor {{ dn42_neighbor.ip }} interface wg1
- neighbor {{ dn42_neighbor.ip }} disable-connected-check
- neighbor {{ dn42_neighbor.ip }} soft-reconfiguration inbound
- neighbor {{ dn42_neighbor.ip }} route-map dn42 out
+ neighbor {{ routers[inventory_hostname].edge_neighbor.ip }} remote-as {{ routers[inventory_hostname].edge_neighbor.asn }}
+ neighbor {{ routers[inventory_hostname].edge_neighbor.ip }} description {{ routers[inventory_hostname].edge_neighbor.description }}
+ neighbor {{ routers[inventory_hostname].edge_neighbor.ip }} update-source wg2
+ neighbor {{ routers[inventory_hostname].edge_neighbor.ip }} soft-reconfiguration inbound
+
+ # DN42
+ neighbor {{ routers[inventory_hostname].dn42_neighbor.ip }} remote-as {{ routers[inventory_hostname].dn42_neighbor.asn }}
+ neighbor {{ routers[inventory_hostname].dn42_neighbor.ip }} description {{ routers[inventory_hostname].dn42_neighbor.description }}
+ neighbor {{ routers[inventory_hostname].dn42_neighbor.ip }} interface wg1
+ neighbor {{ routers[inventory_hostname].dn42_neighbor.ip }} disable-connected-check
+ neighbor {{ routers[inventory_hostname].dn42_neighbor.ip }} soft-reconfiguration inbound
+ neighbor {{ routers[inventory_hostname].dn42_neighbor.ip }} route-map dn42 out
+
+{% if routers[inventory_hostname].local_preference is defined %}
+ neighbor {{ routers[inventory_hostname].edge_neighbor.ip }} route-map set-local-pref-in in
+{% endif %}
  !
  address-family ipv4 unicast
   network 172.20.0.0/14
@@ -50,5 +54,11 @@ route-map dn42 permit 10
  match ip address dn42
 exit
 !
+{% if routers[inventory_hostname].local_preference is defined %}
+route-map set-local-pref-in permit 10
+ match ip address internal
+ set local-preference {{ routers[inventory_hostname].local_preference }}
+exit
+{% endif %}
 end
 

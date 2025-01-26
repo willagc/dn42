@@ -1,4 +1,11 @@
-[routers]
-edge-rtr-01 ansible_host=<IP_ADDRESS_OF_EDGE_RTR_01> ansible_user=root
-edge-rtr-02 ansible_host=<IP_ADDRESS_OF_EDGE_RTR_02> ansible_user=root
+all:
+  children:
+    routers:
+      hosts:
+        edge-rtr-01:
+          ansible_host: 159.203.93.112
+          ansible_user: root
+        edge-rtr-02:
+          ansible_host: 157.230.186.34
+          ansible_user: root
 
