@@ -3,7 +3,7 @@ routers:
     hostname: edge-rtr-01
     home_neighbor:
       ip: 192.168.255.1
-      asn: 65001
+      asn: 4242420513
     edge_neighbor:
       ip: 169.254.1.2
       asn: 4242420513
@@ -12,12 +12,21 @@ routers:
       ip: 172.20.53.103
       asn: 4242423914
       description: DN42
-    local_preference: 200  # Only defined for edge-rtr-01
+    kubernetes_neighbors:
+      - ip: 10.240.0.100
+        asn: 4242420513
+        description: K8S_NODE_100
+      - ip: 10.240.0.101
+        asn: 4242420513
+        description: K8S_NODE_101
+      - ip: 10.240.0.102
+        asn: 4242420513
+        description: K8S_NODE_102
   edge-rtr-02:
     hostname: edge-rtr-02
     home_neighbor:
       ip: 192.168.254.1
-      asn: 65001
+      asn: 4242420513
     edge_neighbor:
       ip: 169.254.1.1
       asn: 4242420513
@@ -26,4 +35,14 @@ routers:
       ip: 172.20.53.98
       asn: 4242423914
       description: DN42_KIOUBIT
+    kubernetes_neighbors:
+      - ip: 10.240.0.100
+        asn: 4242420513
+        description: K8S_NODE_100
+      - ip: 10.240.0.101
+        asn: 4242420513
+        description: K8S_NODE_101
+      - ip: 10.240.0.102
+        asn: 4242420513
+        description: K8S_NODE_102
 
