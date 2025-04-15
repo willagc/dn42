@@ -15,6 +15,7 @@ debug bgp zebra
 ip route 172.22.147.160/27 Null0
 !
 router bgp 4242420513
+ no bgp ebgp-requires-policy
 
  # EDGE-RTR-PEER
  neighbor {{ routers[inventory_hostname].edge_neighbor.ip }} remote-as {{ routers[inventory_hostname].edge_neighbor.asn }}
