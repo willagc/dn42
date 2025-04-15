@@ -1,4 +1,4 @@
-me: Deploy FRR Config
+name: Deploy FRR Config
 
 on:
   push:
