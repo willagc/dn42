@@ -12,30 +12,18 @@ debug bgp updates in
 debug bgp updates out
 debug bgp zebra
 !
+ip route 172.22.147.160/27 Null0
+!
 router bgp 4242420513
-
- # HOMELAB EASIERNETWORKS PFSENSE
- no bgp ebgp-requires-policy
- neighbor {{ routers[inventory_hostname].home_neighbor.ip }} remote-as {{ routers[inventory_hostname].home_neighbor.asn }}
- neighbor {{ routers[inventory_hostname].home_neighbor.ip }} description HOME
- neighbor {{ routers[inventory_hostname].home_neighbor.ip }} ebgp-multihop
- neighbor {{ routers[inventory_hostname].home_neighbor.ip }} disable-connected-check
- neighbor {{ routers[inventory_hostname].home_neighbor.ip }} soft-reconfiguration inbound
-
- # HOMELAB EASIERNETWORKS KUBERNETES
-{% for neighbor in routers[inventory_hostname].kubernetes_neighbors %}
- neighbor {{ neighbor.ip }} remote-as {{ neighbor.asn }}
- neighbor {{ neighbor.ip }} description {{ neighbor.description }}
- neighbor {{ neighbor.ip }} ebgp-multihop
- neighbor {{ neighbor.ip }} disable-connected-check
- neighbor {{ neighbor.ip }} soft-reconfiguration inbound
-{% endfor %}
 
  # EDGE-RTR-PEER
  neighbor {{ routers[inventory_hostname].edge_neighbor.ip }} remote-as {{ routers[inventory_hostname].edge_neighbor.asn }}
  neighbor {{ routers[inventory_hostname].edge_neighbor.ip }} description {{ routers[inventory_hostname].edge_neighbor.description }}
  neighbor {{ routers[inventory_hostname].edge_neighbor.ip }} update-source wg2
  neighbor {{ routers[inventory_hostname].edge_neighbor.ip }} soft-reconfiguration inbound
+{% if inventory_hostname == 'edge-rtr-01' %}
+ neighbor {{ routers[inventory_hostname].edge_neighbor.ip }} route-map LOCALPREF_PEER in
+{% endif %}
 
  # DN42
  neighbor {{ routers[inventory_hostname].dn42_neighbor.ip }} remote-as {{ routers[inventory_hostname].dn42_neighbor.asn }}
@@ -49,16 +37,23 @@ router bgp 4242420513
  address-family ipv4 unicast
   network 172.20.0.0/14
   network 172.22.147.160/27
-  network 192.168.255.0/30
-  network 192.168.254.0/30
   network 169.254.1.0/24
  exit-address-family
 exit
 !
 access-list dn42 seq 5 permit 172.22.147.160/27
+{% if inventory_hostname == 'edge-rtr-01' %}
+access-list LOCAL_PREF seq 5 permit 172.20.0.0/14
+{% endif %}
+!
 route-map dn42 permit 10
  match ip address dn42
 exit
+{% if inventory_hostname == 'edge-rtr-01' %}
+route-map LOCALPREF_PEER permit 10
+ match ip address LOCAL_PREF
+ set local-preference 300
+exit
+{% endif %}
 !
 end
-
