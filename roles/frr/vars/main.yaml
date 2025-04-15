@@ -45,4 +45,3 @@ routers:
       - ip: 10.240.0.102
         asn: 4242420513
         description: K8S_NODE_102
-

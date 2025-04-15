@@ -5,7 +5,9 @@ all:
         edge-rtr-01:
           ansible_host: 159.203.93.112
           ansible_user: root
+          ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
         edge-rtr-02:
           ansible_host: 157.230.186.34
           ansible_user: root
+          ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
 
