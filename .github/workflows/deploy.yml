@@ -1,0 +1,23 @@
+me: Deploy FRR Config
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'playbook.yaml'
+      - 'inventory.yaml'
+      - 'roles/**'
+      - '*.conf'
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run Ansible Playbook
+        run: |
+          ansible-playbook -i inventory.yaml playbook.yaml
+
