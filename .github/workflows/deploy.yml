@@ -1,4 +1,5 @@
 name: Deploy FRR Config
+
 on:
   push:
     branches:
@@ -16,9 +17,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Ensure pip is installed
+        run: |
+          sudo apt-get update && sudo apt-get install -y python3-pip
+
+      - name: Install Ansible Lint
+        run: |
+          pip install ansible-lint
+
+      - name: Auto-fix Ansible Lint issues
+        run: |
+          ansible-lint --fix playbook.yaml roles
+
+      - name: Validate Lint After Fix
+        run: |
+          ansible-lint playbook.yaml roles
+
       - name: Run Ansible Playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: False
         run: |
           ansible-playbook -i inventory.yaml playbook.yaml
-

@@ -2,7 +2,7 @@
 
 ```bash
 # Step 1: Clone the repository to your local machine
-git clone <repository_url>
+git clone git@github.com:willagc/dn42.git
 cd dn42
 
 # Step 2: Edit the inventory file to define the target routers
