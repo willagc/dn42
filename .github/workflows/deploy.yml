@@ -20,7 +20,7 @@ jobs:
 
       - name: Auto-fix Ansible Lint issues
         run: |
-          ansible-lint --fix
+          ansible-lint --write
 
       - name: Validate Lint After Fix
         run: |
