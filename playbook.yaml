@@ -24,7 +24,8 @@
       ansible.builtin.copy:
         content: "{{ frr_backup.stdout }}"
         dest: >
-          {{ backup_dir }}/{{ inventory_hostname }}_frr_{{ ansible_date_time.iso8601 }}.conf
+          {{ backup_dir }}/{{ inventory_hostname }}_frr_{{ ansible_date_time.iso8601 }}.conf  # yamllint disable-line rule:line-length
+
         mode: preserve
       delegate_to: localhost
 
