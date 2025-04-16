@@ -1,4 +1,3 @@
----
 name: Deploy FRR Config
 
 on:
@@ -6,10 +5,10 @@ on:
     branches:
       - main
     paths:
-      - "playbook.yaml"
-      - "inventory.yaml"
-      - "roles/**"
-      - "*.conf"
+      - 'playbook.yaml'
+      - 'inventory.yaml'
+      - 'roles/**'
+      - '*.conf'
 
 jobs:
   deploy:
@@ -18,16 +17,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Auto-fix Ansible Lint issues
+      - name: Ensure linters are installed
         run: |
-          ansible-lint --write
+          sudo apt-get update
+          sudo apt-get install -y ansible-lint yamllint
 
-      - name: Validate Lint After Fix
+      - name: Pre-check YAML syntax
         run: |
+          echo "🔍 Validating YAML syntax..."
+          yamllint playbook.yaml
+
+      - name: Attempt to auto-fix Ansible lint issues
+        id: autofix
+        continue-on-error: true
+        run: |
+          echo "🧽 Running ansible-lint with --write (auto-fix)..."
+          ansible-lint --write playbook.yaml roles || echo "::warning ::ansible-lint encountered issues during auto-fix"
+
+      - name: Validate after auto-fix
+        run: |
+          echo "✅ Re-running ansible-lint for validation..."
           ansible-lint playbook.yaml roles
 
       - name: Run Ansible Playbook
         env:
-          ANSIBLE_HOST_KEY_CHECKING: false
+          ANSIBLE_HOST_KEY_CHECKING: False
         run: |
+          echo "🚀 Running Ansible playbook..."
           ansible-playbook -i inventory.yaml playbook.yaml
