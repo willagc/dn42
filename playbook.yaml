@@ -1,26 +1,28 @@
 - name: Backup and Deploy FRR configurations to routers
   hosts: routers
-  become: yes
+  strategy: linear
+  become: true
   vars:
     backup_dir: "./backups"
   tasks:
-
     - name: Ensure local backup directory exists
       ansible.builtin.file:
         path: "{{ backup_dir }}"
         state: directory
         mode: '0755'
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa: run-once[task]
 
     - name: Backup existing FRR config from device
-      ansible.builtin.shell: cat /etc/frr/frr.conf
+      ansible.builtin.command: cat /etc/frr/frr.conf
       register: frr_backup
+      changed_when: frr_backup.rc != 0  # <- Uses the return code to define when the task has changed.
 
     - name: Save backup locally on control node
       ansible.builtin.copy:
         content: "{{ frr_backup.stdout }}"
         dest: "{{ backup_dir }}/{{ inventory_hostname }}_frr_{{ ansible_date_time.iso8601 }}.conf"
+        mode: preserve
       delegate_to: localhost
 
   roles:
