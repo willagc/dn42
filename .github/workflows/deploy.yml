@@ -1,3 +1,4 @@
+---
 name: Deploy FRR Config
 
 on:
@@ -5,10 +6,10 @@ on:
     branches:
       - main
     paths:
-      - 'playbook.yaml'
-      - 'inventory.yaml'
-      - 'roles/**'
-      - '*.conf'
+      - "playbook.yaml"
+      - "inventory.yaml"
+      - "roles/**"
+      - "*.conf"
 
 jobs:
   deploy:
@@ -19,7 +20,7 @@ jobs:
 
       - name: Auto-fix Ansible Lint issues
         run: |
-          ansible-lint --fix playbook.yaml roles
+          ansible-lint --fix
 
       - name: Validate Lint After Fix
         run: |
@@ -27,6 +28,6 @@ jobs:
 
       - name: Run Ansible Playbook
         env:
-          ANSIBLE_HOST_KEY_CHECKING: False
+          ANSIBLE_HOST_KEY_CHECKING: false
         run: |
           ansible-playbook -i inventory.yaml playbook.yaml
