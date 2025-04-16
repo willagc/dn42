@@ -15,7 +15,7 @@
 
     - name: Backup existing FRR config from device
       ansible.builtin.command: cat /etc/frr/frr.conf
-         register: frr_backup
+          register: frr_backup
       changed_when: frr_backup.rc != 0  # <- Uses the return code to define when the task has changed.
 
     - name: Save backup locally on control node
