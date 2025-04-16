@@ -5,6 +5,7 @@
   become: true
   vars:
     backup_dir: "./backups"
+
   tasks:
     - name: Ensure local backup directory exists
       ansible.builtin.file:
@@ -17,13 +18,14 @@
     - name: Backup existing FRR config from device
       ansible.builtin.command: cat /etc/frr/frr.conf
       register: frr_backup
-      changed_when: frr_backup.rc != 0 
+      changed_when: frr_backup.rc != 0
 
     - name: Save backup locally on control node
       ansible.builtin.copy:
-      content: "{{ frr_backup.stdout }}"
-      dest: "{{ backup_dir }}/{{ inventory_hostname }}_frr_{{ ansible_date_time.iso8601 }}.conf" # noqa 204
-      mode: preserve
+        content: "{{ frr_backup.stdout }}"
+        dest: >
+          {{ backup_dir }}/{{ inventory_hostname }}_frr_{{ ansible_date_time.iso8601 }}.conf
+        mode: preserve
       delegate_to: localhost
 
   roles:
