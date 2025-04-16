@@ -24,7 +24,9 @@
       ansible.builtin.copy:
         content: "{{ frr_backup.stdout }}"
         dest: >
-          {{ backup_dir }}/{{ inventory_hostname }}_{{ ansible_date_time.epoch }}.conf
+          {{ backup_dir }}/
+          {{ inventory_hostname }}_
+          {{ ansible_date_time.epoch }}.conf
         mode: preserve
       delegate_to: localhost
 
