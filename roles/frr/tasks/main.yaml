@@ -1,12 +1,13 @@
+---
 - name: Generate FRR configuration file from template
-  template:
+  ansible.builtin.template:
     src: frr.conf.j2
     dest: /etc/frr/frr.conf
     owner: frr
     group: frr
-    mode: '0644'
+    mode: "0644"
 
 - name: Restart FRR service
-  service:
+  ansible.builtin.service:
     name: frr
     state: restarted

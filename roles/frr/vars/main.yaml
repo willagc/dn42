@@ -1,3 +1,4 @@
+---
 routers:
   edge-rtr-01:
     hostname: edge-rtr-01
